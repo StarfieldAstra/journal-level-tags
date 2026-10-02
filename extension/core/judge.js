@@ -165,10 +165,24 @@ function judge(nameOrRec, ctx) {
   }
 
   // ---- 收集标签 ----
-  if (rec.c === 'source') out.badges.push({ t: 'CSSCI', k: 'cssci-source' });
-  if (rec.c === 'ext') out.badges.push({ t: 'CSSCI扩展', k: 'cssci-ext' });
-  if (rec.d === 'core') out.badges.push({ t: 'CSCD核心', k: 'cscd-core' });
-  if (rec.d === 'ext') out.badges.push({ t: 'CSCD扩展', k: 'cscd-ext' });
+  // 收录标签：CSSCI 与 CSCD 合并为一个，避免双标签被窄列裁掉
+  // 优先级：来源版 > 扩展版；两个库都有时取"双库"（更醒目）
+  const cssciT = rec.c === 'source' ? 'CSSCI' : rec.c === 'ext' ? 'CSSCI扩展' : '';
+  const cscdT = rec.d === 'core' ? 'CSCD' : rec.d === 'ext' ? 'CSCD扩展' : '';
+  if (cssciT && cscdT) {
+    // 双库收录：最值得注意，用独立样式
+    const isSrc = rec.c === 'source';
+    const isCore = rec.d === 'core';
+    out.badges.push({
+      t: isSrc && isCore ? 'CSSCI+CSCD' : cssciT + '+' + cscdT,
+      k: isSrc && isCore ? 'both-core' : 'both-mixed',
+    });
+  } else if (cssciT) {
+    out.badges.push({ t: cssciT, k: rec.c === 'source' ? 'cssci-source' : 'cssci-ext' });
+  } else if (cscdT) {
+    out.badges.push({ t: cscdT, k: rec.d === 'core' ? 'cscd-core' : 'cscd-ext' });
+  }
+
   if (rec.z) {
     out.badges.push({
       t: `中科院${rec.z}区`,

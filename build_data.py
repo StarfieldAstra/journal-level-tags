@@ -733,6 +733,58 @@ def main():
         if k in journals and journals[k].get("cscd") == "core":
             continue
         touch(v["name"], cscd="ext", issn=v.get("issn", ""))
+
+    # ---- 同刊合并（修 CSSCI / CSCD 命名不一致导致的漏判）----
+    # 问题：CSSCI 用「地理学报(北京)」「管理学报(台湾)」区分**地域版本**，
+    #       CSCD 却用不带括号的「地理学报」。两套数据源命名规则不同，
+    #       导致合并时没对上 —— 结果是「地理学报」只有 CSCD 而丢了 CSSCI。
+    # 规则：只合并**地域/版本后缀**，绝不合并**学科版**。
+    #   合并：地理学报(北京)、地理学报(台湾) → 地理学报   （同一本刊的不同版本）
+    #   不合并：北京工业大学学报(社会科学版) → 另一本刊   （社科版 ≠ 理工版）
+    GEO_SUFFIX = re.compile(
+        r"^(北京|台湾|湖北|上海|江苏|广东|四川|吉林|黑龙江|辽宁|山东|"
+        r"陕西|甘肃|新疆|云南|贵州|重庆|天津|内蒙古|广西|海南|西藏|宁夏|青海|"
+        r"Hong Kong|Taiwan)$"
+    )
+    SUBJECT_MARK = re.compile(
+        r"(社会科学版|哲学社会科学版|人文社会科学版|教育版|医学版|自然科学版|"
+        r"理学版|工学版|计算机版|地球科学版|地理科学版|中文版|英文版|"
+        r"社会科学专刊|哲学社会科学版)"
+    )
+    merged = 0
+    # 建立「无后缀刊名」→ 条目 的索引（仅收录确实无括号的）
+    for key in list(journals.keys()):
+        rec = journals[key]
+        nm = rec["name"]
+        m = re.search(r"[（(]([^）)]+)[）)]\s*$", nm)
+        if not m:
+            continue
+        suffix = m.group(1).strip()
+        # 只处理纯地域后缀，且必须是两个字/两个字母（避免误吞含学科名的长后缀）
+        if not GEO_SUFFIX.match(suffix):
+            continue
+        if SUBJECT_MARK.search(suffix):
+            continue
+        base_name = nm[: m.start()].strip()
+        base_key = norm(base_name)
+        if base_key not in journals:
+            # 没有无后缀条目，直接把名字改成无后缀形式
+            rec["name"] = base_name
+            new_key = base_key
+            if new_key != key:
+                del journals[key]
+                journals[new_key] = rec
+            continue
+        # 存在无后缀条目 → 合并收录信息
+        tgt = journals[base_key]
+        for fld in ("cssci", "cscd", "issn", "cas", "univ", "univ985",
+                    "univ985Social", "a3", "subject", "warning"):
+            if rec.get(fld) and not tgt.get(fld):
+                tgt[fld] = rec[fld]
+        del journals[key]
+        merged += 1
+    if merged:
+        print("      同刊合并 %d 条（地域版本后缀 → 主条目）" % merged)
     # 中科院
     for k, v in cas_name.items():
         touch(v["name"], cas=v, issn=v.get("issn", ""))

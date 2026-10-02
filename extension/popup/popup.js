@@ -96,6 +96,15 @@
       rows.push(['页面识别到结果', d.found || 0, d.found ? 'good' : 'bad']);
       rows.push(['匹配到数据集', d.matched || 0, d.matched ? 'good' : 'bad']);
       rows.push(['已挂标签', d.tagged || 0, d.tagged ? 'good' : 'bad']);
+      // 辅助标签：应渲染数 vs 实际可见数，不一致说明被页面 CSS 裁剪
+      if (d.auxTotal) {
+        const okClip = d.auxShown >= d.auxTotal;
+        rows.push([
+          '收录标签显示',
+          d.auxShown + ' / ' + d.auxTotal,
+          okClip ? 'good' : 'bad',
+        ]);
+      }
     }
 
     let html = rows
@@ -110,6 +119,10 @@
       html +=
         '<div class="diag-err">没找到任何刊名元素 —— 该站点选择器可能已失效，' +
         '或页面结构与预期不同。请在控制台执行 <code>__sxfxDiag()</code> 查看详情。</div>';
+    } else if (d.auxTotal && d.auxShown < d.auxTotal) {
+      html +=
+        '<div class="diag-err">有 <b>' + (d.auxTotal - d.auxShown) + '</b> 个收录标签被页面裁剪未显示' +
+        '（该列表格列宽过窄）。CSSCI / CSCD 等信息仍完整，可在标签的详情浮层中查看。</div>';
     } else if (d.misses && d.misses.length) {
       html +=
         '<div class="diag-miss">未收录（不显示标签属正常）：' +

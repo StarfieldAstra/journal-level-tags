@@ -422,11 +422,42 @@
 
     let matched = 0;
     let tagged = 0;
+    let auxTotal = 0;   // 应渲染的辅助标签总数
+    let auxShown = 0;   // 实际在视口内可见的辅助标签数
     const misses = [];
     for (const it of items) {
       const before = document.querySelectorAll('[data-sxfx]').length;
       injectOne(it);
-      if (document.querySelectorAll('[data-sxfx]').length > before) tagged++;
+      const after = document.querySelectorAll('[data-sxfx]').length;
+      if (after > before) tagged++;
+
+      // 统计辅助标签：应渲染数 vs 实际可见数
+      // 若 auxTotal > auxShown，说明标签被页面 CSS 裁剪（如 td 固定宽度 + overflow:hidden）
+      if (after > before && showAux) {
+        const raw2 = it.nameEl && it.nameEl.textContent ? cleanName(it.nameEl.textContent) : '';
+        if (raw2) {
+          let rr = null;
+          for (const c of candidateNames(raw2)) {
+            rr = judge(c, CTX);
+            if (rr.record) break;
+          }
+          if (rr && rr.record) {
+            const expect = (rr.badges || []).filter((b) => b.k !== 'top').length;
+            auxTotal += expect;
+            // 实际可见：元素存在且有非零尺寸
+            const scope = it.nameEl.parentElement || it.nameEl;
+            const rendered = (scope.querySelectorAll
+              ? scope.querySelectorAll('.' + NS + '-aux')
+              : []
+            );
+            for (let i = 0; i < rendered.length; i++) {
+              const rect = rendered[i].getBoundingClientRect();
+              if (rect.width > 0 && rect.height > 0) auxShown++;
+            }
+          }
+        }
+      }
+
       // 诊断：记录未命中的刊名样本
       const raw = it.nameEl && it.nameEl.textContent ? cleanName(it.nameEl.textContent) : '';
       if (raw) {
@@ -441,6 +472,8 @@
     }
     DIAG.matched = matched;
     DIAG.tagged = tagged;
+    DIAG.auxTotal = auxTotal;
+    DIAG.auxShown = auxShown;
     DIAG.misses = misses;
   }
 
@@ -450,6 +483,8 @@
     found: 0,
     matched: 0,
     tagged: 0,
+    auxTotal: 0,
+    auxShown: 0,
     misses: [],
     error: null,
   };

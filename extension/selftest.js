@@ -170,10 +170,21 @@
 
   function badges(rec) {
     let s = '';
-    if (rec.c === 'source') s += '<span class="tag aux cssci-s">CSSCI</span>';
-    else if (rec.c === 'ext') s += '<span class="tag aux" style="background:rgba(255,204,0,.1);color:#8A6D00">CSSCI扩展</span>';
-    if (rec.d === 'core') s += '<span class="tag aux cscd-c">CSCD核心</span>';
-    else if (rec.d === 'ext') s += '<span class="tag aux" style="background:rgba(0,122,255,.08);color:#0060DF">CSCD扩展</span>';
+    // 收录标签：与 core/judge.js 一致，CSSCI 与 CSCD 合并为单个标签
+    const cssciT = rec.c === 'source' ? 'CSSCI' : rec.c === 'ext' ? 'CSSCI扩展' : '';
+    const cscdT = rec.d === 'core' ? 'CSCD' : rec.d === 'ext' ? 'CSCD扩展' : '';
+    const BOTH = 'background:linear-gradient(135deg,#af52de,#d42aa4);color:#fff;font-weight:600;box-shadow:0 1px 3px rgba(175,82,222,.4)';
+    if (cssciT && cscdT) {
+      s += '<span class="tag aux" style="' + BOTH + '">' + cssciT + '+' + cscdT + '</span>';
+    } else if (cssciT) {
+      s += rec.c === 'source'
+        ? '<span class="tag aux cssci-s">CSSCI</span>'
+        : '<span class="tag aux" style="background:rgba(255,204,0,.1);color:#8A6D00">CSSCI扩展</span>';
+    } else if (cscdT) {
+      s += rec.d === 'core'
+        ? '<span class="tag aux cscd-c">CSCD</span>'
+        : '<span class="tag aux" style="background:rgba(142,142,147,.12);color:#48484A">CSCD扩展</span>';
+    }
     if (rec.z) s += '<span class="tag aux" style="background:' + (rec.z === '1' ? 'rgba(255,59,48,.15);color:#C9252D' : rec.z === '2' ? 'rgba(255,149,0,.16);color:#B25000' : rec.z === '3' ? 'rgba(48,176,199,.18);color:#00707F' : 'rgba(142,142,147,.18);color:#48484A') + '">中科院' + rec.z + '区</span>';
     return s;
   }

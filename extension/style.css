@@ -77,6 +77,11 @@
   font-weight: 400;                    /* SF Pro Regular */
   border-radius: 5px;
   letter-spacing: 0;
+  /* 防御性样式：部分平台的表格列有固定宽度或 overflow:hidden，
+     多个辅助标签并排时容易被裁掉第二个。 nowrap + 允许换行可避免。 */
+  white-space: nowrap;
+  flex: 0 0 auto;
+  max-width: none;
   /* 默认（未知类型） */
   background: rgba(120, 120, 128, 0.12);
   color: #3A3A3C;
@@ -87,11 +92,37 @@
 .sxfx-tag.sxfx-aux::before { display: none; }  /* 辅助标签不加圆点 */
 
 /* CSSCI —— systemYellow tinted */
-.sxfx-aux.sxfx-cssci-source { background: rgba(255, 204, 0, 0.18); color: #7A5C00; }
+.sxfx-aux.sxfx-cssci-source { background: rgba(255, 204, 0, 0.20); color: #7A5C00; }
 .sxfx-aux.sxfx-cssci-ext    { background: rgba(255, 204, 0, 0.10); color: #8A6D00; }
-/* CSCD —— systemBlue tinted */
-.sxfx-aux.sxfx-cscd-core   { background: rgba(0, 122, 255, 0.14); color: #0055B8; }
-.sxfx-aux.sxfx-cscd-ext    { background: rgba(0, 122, 255, 0.08); color: #0060DF; }
+/* CSCD —— systemGray tinted（单库时低调些，让双库标签更突出） */
+.sxfx-aux.sxfx-cscd-core   { background: rgba(142, 142, 147, 0.20); color: #3A3A3C; }
+.sxfx-aux.sxfx-cscd-ext    { background: rgba(142, 142, 147, 0.12); color: #48484A; }
+
+/* ---- 双库收录（CSSCI + CSCD）：实心渐变 + 投影，最醒目 ----
+   集中投稿时这是最想一眼看到的标签，故给它最高视觉权重：
+   唯一的渐变、唯一的投影、加粗字重。
+   紫 → 品红渐变，与主标签的蓝/橙/红及单库的��/灰全部拉开距离。 */
+.sxfx-aux.sxfx-both-core {
+  background: linear-gradient(135deg, #af52de 0%, #d42aa4 100%);
+  color: #ffffff;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  box-shadow: 0 1px 3px rgba(175, 82, 222, 0.4);
+  padding: 0 9px;
+}
+.sxfx-aux.sxfx-both-mixed {
+  background: linear-gradient(135deg, #b968d8 0%, #e05cb0 100%);
+  color: #ffffff;
+  font-weight: 600;
+  opacity: 0.92;
+  box-shadow: 0 1px 2px rgba(175, 82, 222, 0.3);
+}
+.sxfx-aux.sxfx-both-core:hover,
+.sxfx-aux.sxfx-both-mixed:hover {
+  filter: saturate(1.1) brightness(1.05);
+  background: linear-gradient(135deg, #af52de 0%, #d42aa4 100%);
+  opacity: 1;
+}
 /* 中科院分区 —— systemRed → systemTeal 递进 */
 .sxfx-aux.sxfx-cas-1 { background: rgba(255, 59, 48, 0.15); color: #C9252D; }
 .sxfx-aux.sxfx-cas-2 { background: rgba(255, 149, 0, 0.16); color: #B25000; }

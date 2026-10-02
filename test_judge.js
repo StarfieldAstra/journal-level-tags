@@ -112,3 +112,56 @@ for (const [name, ov, expect, note] of ovCases) {
   );
 }
 console.log(`覆盖测试: ${op} 通过, ${of} 失败`);
+
+// ---------------------------------------------------------------- 收录标签合并测试
+console.log('\n=== 收录标签合并与同刊合并 ===');
+const { normBase: nb2 } = require('./extension/core/judge.js');
+
+function badges(n) {
+  const r = judge(n, ctx);
+  return r.badges.map((b) => b.t);
+}
+
+const badgeCases = [
+  // [刊名, 期望的标签文本数组, 说明]
+  ['经济研究', ['A1', 'CSSCI'], 'CSSCI来源 + A1目录'],
+  ['长江流域资源与环境', ['A4', 'CSSCI+CSCD'], '双库 → 合并为一个标签'],
+  ['古地理学报', ['A4', 'CSCD'], '仅CSCD核心'],
+  ['热带地理', ['A4', 'CSSCI扩展+CSCD'], 'CSSCI扩展 + CSCD核心'],
+];
+
+let bp = 0, bf = 0;
+for (const [name, want, note] of badgeCases) {
+  const got = badges(name);
+  // A 级是主标签，只比对收录标签部分
+  const aux = got.filter((t) => !/^[ABC]\d?$/.test(t) || t === 'A1' || t === 'A2' || t === 'A3' || t === 'A4');
+  const gotAux = got.filter((t) => /CSSCI|CSCD/.test(t));
+  const ok = JSON.stringify(gotAux) === JSON.stringify(want.filter((t) => /CSSCI|CSCD/.test(t)));
+  ok ? bp++ : bf++;
+  console.log(
+    `${ok ? '✓' : '✗'} ${name.padEnd(16)} 收录标签 [${gotAux.join(', ')}]  ${note}` +
+    (ok ? '' : `\n     期望 [${want.filter((t) => /CSSCI|CSCD/.test(t)).join(', ')}]`)
+  );
+}
+
+// 同刊合并的回归测试：CSSCI 用地域后缀、CSCD 不用
+const data2 = require('./extension/data/journals.json');
+function recOf(n) {
+  const k = Object.keys(data2.journals).find((x) => data2.journals[x].n === n || x === n);
+  return k ? data2.journals[k] : null;
+}
+const mergeCases = [
+  ['地理学报', 'source', 'core', 'CSSCI(北京)+CSCD → 应合并到主条目'],
+  ['北京工业大学学报(社会科学版)', 'source', undefined, '学科版必须保持独立'],
+  ['北京工业大学学报', undefined, 'core', '理工版保持独立，只判 CSCD'],
+];
+for (const [name, c, d, note] of mergeCases) {
+  const r = recOf(name);
+  const ok = r && r.c === c && r.d === d;
+  ok ? bp++ : bf++;
+  console.log(
+    `${ok ? '✓' : '✗'} ${name.padEnd(26)} c=${r ? r.c || '-' : '?'} d=${r ? r.d || '-' : '?'}  ${note}`
+  );
+}
+
+console.log(`\n收录标签测试: ${bp} 通过, ${bf} 失败`);
