@@ -27,19 +27,29 @@ const m = JSON.parse(fs.readFileSync(path.join(EXT, 'manifest.json'), 'utf8'));
  *    不是隐私；`xxx.edu.cn` / `example.edu.cn` 是占位符。
  *    早期版本用 `[一-龥]{2,4}(大学|学院)` 粗匹配，结果把 A3 白名单里几百所高校全部误报。
  *    因此只匹配「与使用者身份直接相关」的内容。
+ *
+ * ⚠️ 身份类关键词（校名、缩写、真实署名、本机目录名）**不写在本文件里** ——
+ *    本文件会进公开仓库，写死等于自我泄露。改由环境变量注入：
+ *
+ *    SXF_PRIVACY_TERMS   用 | 分隔的额外禁用词，例："<你的学校全称>|<合作者姓名>|<本机目录名>"
+ *    SXF_PRIVACY_PATTERN 额外正则（可选），用于匹配缩写，例："\\b<缩写>\\b"
+ *
+ *    未设置时仅执行下面的通用规则（仍能拦住路径、邮箱、手机号等）。
  */
+const EXTRA_TERMS = (process.env.SXF_PRIVACY_TERMS || '')
+  .split('|')
+  .map((s) => s.trim())
+  .filter(Boolean);
+const EXTRA_PATTERN = process.env.SXF_PRIVACY_PATTERN || '';
+
 const FORBIDDEN = [
   // —— 机构身份 ——
   { re: /webvpn\.[a-z0-9-]+\.edu\.cn/i, why: '真实学校 VPN 域名', except: /(xxx|example|your)\./i },
-  { re: /\bsxufe\b/i, why: '学校缩写' },
-  { re: /山西财经大学/, why: '学校全称' },
-  { re: /山财校\s*[〔[【]\s*\d{4}\s*[〕\]】]/, why: '校内文件文号' },
 
   // —— 本机路径（会暴露 Windows 用户名）——
   { re: /[A-Za-z]:\\Users\\[^\\/:*?"<>|\r\n]+/i, why: 'Windows 本机绝对路径', except: /<你的用户名>|Users\\\\?\$|example/i },
   { re: /\/home\/[A-Za-z0-9._-]+\//, why: 'Linux 家目录路径' },
   { re: /\/Users\/[A-Za-z0-9._-]+\//, why: 'macOS 家目录路径' },
-  { re: /我的科研活动|科研政策与制度/, why: '本机资料目录名' },
 
   // —— 联系方式与身份标识 ——
   { re: /[\w.+-]+@[\w-]+\.[\w.]{2,}/, why: '邮箱地址', except: /example|your-name|your\.email|test\.com|@qq\.com\/s\/?$/i },
@@ -48,10 +58,30 @@ const FORBIDDEN = [
   { re: /\b\d{8,12}\b(?=\s*[,，]?\s*(学号|工号|QQ|qq))/, why: '学号/工号/QQ' },
 
   // —— 真实论文署名（示例数据里最容易被忽略的一类）——
-  { re: /任晓松|寇怡璇|詹璐|张志强|庄栋嘉|张国强/, why: '真实论文作者名' },
+  // 具体姓名由 SXF_PRIVACY_TERMS 注入，此处不写死
 ];
 
+// 追加来自环境变量的身份类禁用词
+EXTRA_TERMS.forEach((t) => {
+  FORBIDDEN.push({
+    re: new RegExp(t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')),
+    why: '注入的身份关键词',
+  });
+});
+if (EXTRA_PATTERN) {
+  try {
+    FORBIDDEN.push({ re: new RegExp(EXTRA_PATTERN, 'i'), why: '注入的自定义规则' });
+  } catch (e) {
+    console.log('  ⚠ SXF_PRIVACY_PATTERN 正则无效，已忽略: ' + e.message);
+  }
+}
+
 console.log('=== 发布前隐私扫描 ===');
+if (EXTRA_TERMS.length) {
+  console.log(`  · 已注入 ${EXTRA_TERMS.length} 个身份关键词（来自 SXF_PRIVACY_TERMS）`);
+} else {
+  console.log('  提示：设置 SXF_PRIVACY_TERMS 可追加身份关键词，扫描更严');
+}
 const skipDirs = new Set(['data', 'node_modules', '.git', '.workbuddy', 'release']);
 // 这些文件不会进发布包，跳过以免误报
 const skipFiles = new Set(['build_release.js', 'build_release.md']);
