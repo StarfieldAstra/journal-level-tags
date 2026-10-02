@@ -1,1 +1,1 @@
-801659962af2d6aece777c7b489d9f8b46015474768fd7b7a956a709b4cae2a1  journal-level-tags-v1.1.2.zip
+f41283d64ed117faf923d06685af9ff8edbfa08eee9af15459b81325ac74958a  journal-level-tags-v1.2.0.zip

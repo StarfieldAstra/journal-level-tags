@@ -165,3 +165,62 @@ for (const [name, c, d, note] of mergeCases) {
 }
 
 console.log(`\n收录标签测试: ${bp} 通过, ${bf} 失败`);
+
+// ---------------------------------------------------------------- 北核测试
+console.log('\n=== 北核（中文核心期刊要目总览）===');
+const bkAll = Object.values(data.journals).filter((v) => v.b);
+console.log(`北核数据 ${bkAll.length} 种`);
+
+const bkCases = [
+  ['财经论丛', 'B1', '纯北核 → B1'],
+  ['学术月刊', 'A3', 'CSSCI+北核 → A3（级别不被北核改变）'],
+  ['中国农村观察', 'A3', 'CSSCI+北核 → A3'],
+  ['经济研究', 'A1', 'A1 目录优先于北核'],
+  ['Sustainability', 'C', '预警一票否决优先于北核'],
+];
+let kp = 0, kf = 0;
+for (const [name, want, note] of bkCases) {
+  const r = judge(name, ctx);
+  const ok = r.level === want;
+  ok ? kp++ : kf++;
+  console.log(`${ok ? '✓' : '✗'} ${name.padEnd(16)} → ${String(r.level).padEnd(3)} [${r.badges.map((b) => b.t).join(',')}]  ${note}`);
+}
+
+// 「纯北核」＝北核且自身无 CSSCI/CSCD/分区记录。
+// 注意：judge 的 lookup 会先试精确键，失败后退副标题匹配（插件的基本假设：
+// 「X(某版)」视为 X 的同一本刊）。因此这里用 lookup 的实际命中记录来判定，
+// 而非用 bkAll 里那条记录自身的字段 —— 后者会因副标题归并而误判。
+function primaryRec(v) {
+  const r = judge(v.n, ctx);
+  return r.record || v;
+}
+const pureBk = bkAll.filter((v) => {
+  const p = primaryRec(v);
+  return !p.c && !p.d && !p.z;
+});
+const wrongPure = pureBk.filter((v) => judge(v.n, ctx).level !== 'B1');
+if (wrongPure.length === 0) {
+  kp++;
+  console.log(`✓ 纯北核 ${pureBk.length} 种全部判 B1`);
+} else {
+  kf++;
+  console.log(`✗ 纯北核中 ${wrongPure.length} 种未判 B1，例：${wrongPure.slice(0, 3).map((v) => v.n).join('、')}`);
+}
+
+// 北核标签：按实际命中的主刊记录判断（副标题归并后主刊可能已带 b）
+const hasBk = bkAll.filter((v) => judge(v.n, ctx).badges.some((b) => b.t === '北核')).length;
+const ratio = (hasBk / bkAll.length * 100).toFixed(1);
+if (hasBk / bkAll.length >= 0.99) {
+  kp++;
+  console.log(`✓ ${hasBk}/${bkAll.length}（${ratio}%）种北核带「北核」标签`);
+} else {
+  kf++;
+  console.log(`✗ 仅 ${hasBk}/${bkAll.length}（${ratio}%）种带北核标签`);
+  const noTag = bkAll.filter((v) => !judge(v.n, ctx).badges.some((b) => b.t === '北核'));
+  noTag.slice(0, 5).forEach((v) => {
+    const r = judge(v.n, ctx);
+    console.log(`     ${v.n} → ${r.level} [${r.badges.map((b) => b.t).join(',')}]  命中记录: ${r.record ? r.record.n : '无'}`);
+  });
+}
+
+console.log(`\n北核测试: ${kp} 通过, ${kf} 失败`);

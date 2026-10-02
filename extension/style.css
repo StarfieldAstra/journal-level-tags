@@ -122,6 +122,12 @@
 .sxfx-aux.sxfx-cscd-core   { background: rgba(142, 142, 147, 0.38); color: #1C1C1E; }
 .sxfx-aux.sxfx-cscd-ext    { background: rgba(142, 142, 147, 0.24); color: #2C2C2E; }
 
+/* 北核 —— 深青 tinted（B1 级依据，视觉权重低于双库） */
+.sxfx-aux.sxfx-beike {
+  background: rgba(0, 122, 255, 0.30);
+  color: #004E9C;
+}
+
 /* ---- 双库收录（CSSCI + CSCD）：实心渐变 + 投影，最醒目 ----
    集中投稿时这是最想一眼看到的标签，故给它最高视觉权重：
    唯一的渐变、唯一的投影、加粗字重。

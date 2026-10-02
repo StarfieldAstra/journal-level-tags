@@ -183,6 +183,11 @@ function judge(nameOrRec, ctx) {
     out.badges.push({ t: cscdT, k: rec.d === 'core' ? 'cscd-core' : 'cscd-ext' });
   }
 
+  // 北大核心（北核）：山财办法 B1 级认定依据之一。
+  // ⚠️ 只在高优先级收录标签之外补充显示 —— 若该刊已是 CSSCI/CSCD，
+  //    北核不改变其级别（已按 A3/A4 判定），仅作信息补充。
+  if (rec.b) out.badges.push({ t: '北核', k: 'beike' });
+
   if (rec.z) {
     out.badges.push({
       t: `中科院${rec.z}区`,
@@ -215,6 +220,32 @@ function judge(nameOrRec, ctx) {
 
   const isCoreCn = rec.c === 'source' || rec.d === 'core';
 
+  // ---- 人工覆盖（最高优先级）----
+  // ⚠️ 必须放在 A3/A4 自动判定**之前**。
+  //    之前放在 A4 兜底之前，导致 A3 白名单命中的期刊在第 4 步就 return 了，
+  //    覆盖逻辑根本执行不到 —— 于是「撤销覆盖，恢复 A4」按钮点了没反应。
+  // 现在提到最前，A3（白名单 / 中科院2区）与 A4 都能被覆盖。
+  const ov = getOverride(name, ctx);
+  if (ov && ov.level) {
+    // 只允许在 A3 / A4 之间调整：
+    //  A4→A3：人工核实主办单位后提升
+    //  A3→A4：白名单判错了，显式降级
+    // 不允许改成其他级别 —— 收录状态（CSSCI/CSCD/中科院分区）由数据决定，
+    // 人为改 A1/A2/B1/C 会绕过办法的认定规则，意义不大且易出错。
+    const allowed = ov.level === 'A3' || ov.level === 'A4';
+    if (allowed) {
+      out.level = ov.level;
+      out.overridden = true;
+      out.reasons.push(
+        `人工核实后覆盖为 ${ov.level}` +
+        (ov.note ? `（依据：${ov.note}）` : '') +
+        '，设置于 ' + (ov.at || '未知时间')
+      );
+      out.needVerify = false;   // 人工已定论，无需再提示待核实
+      return out;
+    }
+  }
+
   // ---- 4. A3：CSSCI来源/CSCD核心 + 省级"国家级学术刊物"认定 ----
   if (isCoreCn) {
     const a3 = checkA3Condition(rec, meta);
@@ -239,29 +270,6 @@ function judge(nameOrRec, ctx) {
     return out;
   }
 
-  // ---- 5.5 人工覆盖 ----
-  // 用户人工核实主办单位后手动提升的级别，优先于自动判定结果。
-  // 说明：预警名单的一票否决（C）在最前面已处理，此处不受其影响。
-  const ov = getOverride(name, ctx);
-  if (ov && ov.level) {
-    // 只允许在 A3 / A4 之间调整：
-    //  A3→A4：撤销提升；A4→A3：人工核实后提升。
-    // 不允许改成其他级别 —— 收录状态（CSSCI/CSCD/中科院分区）由数据决定，
-    // 人为改 A1/A2/B1/C 会绕过办法的认定规则，意义不大且易出错。
-    const allowed = ov.level === 'A3' || ov.level === 'A4';
-    if (allowed) {
-      out.level = ov.level;
-      out.overridden = true;
-      out.reasons.push(
-        `人工核实后覆盖为 ${ov.level}` +
-        (ov.note ? `（依据：${ov.note}）` : '') +
-        '，设置于 ' + (ov.at || '未知时间')
-      );
-      if (ov.level === 'A3') out.needVerify = false;
-      return out;
-    }
-  }
-
   // ---- 6. A4：其余 CSSCI来源 / CSCD核心，或中科院 3/4 区 ----
   if (isCoreCn) {
     out.level = 'A4';
@@ -279,10 +287,17 @@ function judge(nameOrRec, ctx) {
     return out;
   }
 
-  // ---- 7. B1：CSSCI扩展 / CSCD扩展 / EI / A&HCI ----
+  // ---- 7. B1：CSSCI扩展 / CSCD扩展 / 北大核心 / EI / A&HCI ----
   if (rec.c === 'ext' || rec.d === 'ext') {
     out.level = 'B1';
     out.reasons.push(rec.c === 'ext' ? 'CSSCI 扩展版来源期刊' : 'CSCD 扩展库期刊');
+    return out;
+  }
+  // 北大《中文核心期刊要目总览》—— 办法第十五条 B1 级认定依据之一
+  // （此前因数据缺失未实现，见 import_beike.py 补入的 1983 种）
+  if (rec.b) {
+    out.level = 'B1';
+    out.reasons.push('北京大学《中文核心期刊要目总览》收录期刊');
     return out;
   }
   if (rec.W && /AHCI/i.test(rec.W)) {

@@ -190,6 +190,7 @@
       else if (rec.c === 'ext') dbs.push('CSSCI 扩展版');
       if (rec.d === 'core') dbs.push('CSCD 核心库');
       else if (rec.d === 'ext') dbs.push('CSCD 扩展库');
+      if (rec.b) dbs.push('北大核心（中文核心期刊要目总览）');
       if (dbs.length) html += popRow('收录', esc(dbs.join('、')));
 
       // 中科院分区
@@ -236,12 +237,17 @@
     // 人工覆盖按钮：仅对 A3 / A4 开放
     if (res.record && (res.level === 'A3' || res.level === 'A4')) {
       const toA3 = res.level === 'A4';
+      // 「撤销」针对的是**白名单判错的 A3**，必须写入一条显式的 A4 覆盖；
+      // 若只是删除覆盖记录，白名单仍会把它判回 A3，等于没点。
+      const label = toA3
+        ? '主办单位属国家级 → 升为 A3'
+        : res.overridden
+          ? '撤销人工提升，恢复自动判定'
+          : '白名单有误 → 降为 A4';
       html +=
         '<div class="' + NS + '-pop-act">' +
         '<button class="' + NS + '-pop-btn' + (toA3 ? ' primary' : '') + '" data-sxfx-act="' +
-        (toA3 ? 'to-a3' : 'to-a4') + '">' +
-        (toA3 ? '主办单位属国家级 → 升为 A3' : '撤销覆盖，恢复 A4') +
-        '</button></div>';
+        (toA3 ? 'to-a3' : 'to-a4') + '">' + label + '</button></div>';
     }
 
     html +=
@@ -260,7 +266,10 @@
         const act = btn.getAttribute('data-sxfx-act');
         btn.disabled = true;
         btn.textContent = '保存中…';
-        const r = await setOverride(name, act === 'to-a3' ? 'A3' : null, '人工核实主办单位');
+        // 降为 A4 时写入显式的 A4 覆盖（而非删除记录），
+        // 否则白名单命中时仍会判回 A3 —— 这正是此前按钮无效的原因。
+        const target = act === 'to-a3' ? 'A3' : 'A4';
+        const r = await setOverride(name, target, act === 'to-a3' ? '人工核实主办单位' : '白名单有误，人工降级');
         if (!r.ok) {
           btn.textContent = '保存失败：' + (r.error || '未知错误');
           return;
@@ -377,9 +386,10 @@
 
     // 未收录且非预警的刊不显示标签（避免满屏 C 级噪声）
     const rec = res.record;
+    // rec.b = 北大核心：虽无 CSSCI/CSCD，但可判 B1 级，故也需显示
     const isInteresting =
       rec &&
-      (rec.c || rec.d || rec.z || rec.s || rec.w);
+      (rec.c || rec.d || rec.z || rec.s || rec.w || rec.b);
     if (!isInteresting) return;
 
     // 整组标签放进一个 block 级容器 —— 必然另起一行，不受刊名长短影响。
