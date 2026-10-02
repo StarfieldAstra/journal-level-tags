@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>山财期刊标签 — 隐私政策</title>
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+  body {
+    max-width: 740px; margin: 0 auto; padding: 46px 22px 80px;
+    background: #fff; color: #1C1C1E;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
+      "PingFang SC", "Segoe UI", "Microsoft YaHei", sans-serif;
+    font-size: 15px; line-height: 1.75;
+  }
+  h1 { font-size: 30px; font-weight: 700; margin: 0 0 6px; letter-spacing: -0.5px; }
+  .upd { font-size: 13.5px; color: #8E8E93; margin-bottom: 36px; }
+  h2 { font-size: 19px; font-weight: 600; margin: 36px 0 10px; letter-spacing: -0.2px; }
+  h3 { font-size: 16px; font-weight: 600; margin: 22px 0 6px; }
+  p { margin: 10px 0; }
+  ul, ol { padding-left: 24px; margin: 10px 0; }
+  li { margin: 6px 0; }
+
+  /* 核心承诺卡片 */
+  .hero {
+    display: flex; gap: 14px; align-items: flex-start;
+    padding: 18px 20px; border-radius: 14px; margin: 0 0 32px;
+    background: rgba(52, 199, 89, 0.1);
+  }
+  .hero .mark {
+    flex: 0 0 auto; width: 26px; height: 26px; border-radius: 50%;
+    background: #34C759; color: #fff; font-size: 15px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center; line-height: 1;
+  }
+  .hero .txt { font-size: 15px; line-height: 1.7; }
+
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+  th, td { padding: 10px 14px; text-align: left; vertical-align: top;
+           border-bottom: 0.5px solid rgba(60, 60, 67, 0.16); }
+  th { background: rgba(0, 0, 0, 0.02); font-weight: 600; font-size: 13px; color: #8E8E93; }
+
+  code {
+    background: rgba(0, 0, 0, 0.05); padding: 2px 6px; border-radius: 5px;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 13.5px;
+  }
+  .note {
+    padding: 15px 17px; border-radius: 12px; margin: 16px 0; font-size: 14px;
+    line-height: 1.7; background: rgba(0, 122, 255, 0.08); color: #004E9C;
+  }
+  footer {
+    margin-top: 44px; padding-top: 18px; border-top: 0.5px solid rgba(60, 60, 67, 0.16);
+    font-size: 13.5px; color: #8E8E93;
+  }
+  a { color: #007AFF; }
+</style>
+</head>
+<body>
+
+<h1>山财期刊标签 — 隐私政策</h1>
+<div class="upd">最后更新：2026 年 10 月 2 日 ｜ 适用版本：1.0.0</div>
+
+<div class="hero">
+  <div class="mark">✓</div>
+  <div class="txt">
+    <b>本扩展不收集、不传输、不共享任何用户个人信息。</b><br>
+    扩展的全部功能均在您的浏览器本地完成，运行过程中不发起任何网络请求。
+  </div>
+</div>
+
+<h2>1. 我们收集哪些信息</h2>
+<p><b>不收集任何信息。</b></p>
+<p>本扩展不采集、不存储、不传输以下内容：</p>
+<ul>
+  <li>您的浏览历史、访问过的网址</li>
+  <li>您在学术平台上的检索关键词</li>
+  <li>您浏览或阅读过的论文内容</li>
+  <li>您的身份信息、账号、联系方式</li>
+  <li>任何用于标识或追踪您身份的数据</li>
+</ul>
+
+<h2>2. 扩展的工作方式</h2>
+<p>本扩展的工作流程完全在您的设备上离线完成：</p>
+<ol>
+  <li>期刊目录数据（共 23851 条记录，约 4.9 MB）在安装时随扩展包一同存入您的浏览器，
+      <b>运行时不再从网络获取</b>；</li>
+  <li>当您访问学术检索网站时，扩展读取页面上已公开展示的<b>刊名字符串</b>；</li>
+  <li>该字符串仅在浏览器内存中与本地目录做字符串匹配，以确定级别；</li>
+  <li>匹配完成后，扩展在刊名旁插入标签。页面内容不会被复制、存储或发送到任何地方。</li>
+</ol>
+
+<div class="note">
+  <b>关键点：</b>扩展虽被授权访问若干学术网站域名，但<b>读取范围仅限于页面上的刊名文本</b>，
+  用于完成标签标注。扩展不读取论文正文、不监听表单输入、不记录用户在页面上的任何操作。
+</div>
+
+<h2>3. 本地存储的数据</h2>
+<p>扩展使用浏览器本地存储（<code>chrome.storage.local</code>）保存以下内容，<b>仅存于您的设备</b>：</p>
+<table>
+  <thead><tr><th>数据</th><th>用途</th><th>是否可清除</th></tr></thead>
+  <tbody>
+    <tr>
+      <td>标签显示开关</td>
+      <td>记住您是否启用了标签显示</td>
+      <td>可在设置面板中切换</td>
+    </tr>
+    <tr>
+      <td>人工核实的级别调整</td>
+      <td>记录您手动将某刊从 A4 提升为 A3 的决定</td>
+      <td>可在设置面板中逐条删除或一键清空</td>
+    </tr>
+  </tbody>
+</table>
+<p>这些数据<b>不会同步到云端</b>，<b>不会随扩展分发到其他设备</b>。卸载扩展即被彻底删除。</p>
+
+<h2>4. 第三方共享</h2>
+<p><b>不与任何第三方共享数据。</b></p>
+<p>扩展不接入任何分析、广告、追踪或统计服务，不使用任何形式的用户行为追踪技术
+（包括 Cookie、指纹识别、像素追踪等）。</p>
+
+<h2>5. 扩展权限的用途</h2>
+<table>
+  <thead><tr><th>权限</th><th>用途</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><code>storage</code></td>
+      <td>保存上述开关状态与级别调整记录</td>
+    </tr>
+    <tr>
+      <td>学术网站访问权限<br><small>（知网、Web of Science、Google 学术、百度学术、ScienceDirect、PubMed、Springer、Semantic Scholar）</small></td>
+      <td>在检索结果页的刊名旁插入级别标签</td>
+    </tr>
+    <tr>
+      <td>校园 WebVPN 代理域名<br><small>（本发行版未内置任何学校域名）</small></td>
+      <td>本扩展不内置任何学校 VPN 域名。若使用者自行在设置中加入其所在学校的 VPN 域名，
+          该权限同样仅用于从 URL 路径中反查真实站点，扩展不对该域名做任何数据处理。</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>6. 数据来源说明</h2>
+<p>扩展内置的期刊目录数据来自公开发布的学术评价体系：</p>
+<ul>
+  <li><b>CSSCI 2025–2026</b>：南京大学中国社会科学研究评价中心</li>
+  <li><b>CSCD 2025–2026</b>：中国科学院文献情报中心</li>
+  <li><b>中科院期刊分区表 2025 年版</b>：中国科学院文献情报中心
+      （注：该体系自 2026 年起已停止更新，2025 年版为终版）</li>
+  <li><b>本校科研成果管理办法</b>及其附件 A 级期刊目录</li>
+  <li><b>中科院《国际期刊预警名单》</b>（2020–2025 年累计）</li>
+</ul>
+<p>上述数据均已离线内置，扩展运行时不访问任何外部服务器。</p>
+
+<h2>7. 远程代码</h2>
+<p>扩展<b>不包含</b>任何远程加载的代码、脚本或数据。所有逻辑与数据均包含在安装包内，
+运行时不从网络获取任何可执行内容。</p>
+
+<h2>8. 您的权利</h2>
+<p>由于我们不收集任何信息，因此不涉及数据访问、更正或删除请求。
+若您希望清除扩展保存的本地数据，可通过以下方式：</p>
+<ul>
+  <li>在扩展设置面板中清空「人工核实的级别调整」；</li>
+  <li>或在浏览器的扩展管理页面直接<b>卸载本扩展</b>，本地数据将随之彻底删除。</li>
+</ul>
+
+<h2>9. 政策变更</h2>
+<p>若本隐私政策发生变更，将通过扩展更新一并发布，并在本页更新「最后更新」日期。
+政策变更不涉及已收集数据的处理方式（因为我们不收集数据）。</p>
+
+<h2>10. 联系方式</h2>
+<p>如对本隐私政策有任何疑问，请通过以下方式联系：</p>
+<ul>
+  <li>在扩展商店页面的「支持」链接中提供的邮箱地址</li>
+</ul>
+
+<footer>
+  山财期刊标签 v1.0.0 ｜ 本扩展为纯本地学术数据标注工具，不收集、不传输、不共享任何用户数据。
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<style>
+  /* ============================================================
+     Apple HIG 风格设置面板
+     ── 系统色：Blue #007AFF / Green #34C759 / Red #FF3B30
+     ── Label #1C1C1E / Gray #8E8E93 / Gray2 #AEAEB2
+     ── 背景 #F2F2F7 (systemGroupedBackground)，卡片纯白
+     ── 圆角：容器 12px / 按钮 10px / 小控件 8px
+     ── hairline 0.5px 描边模拟 iOS 分隔线
+     ============================================================ */
+  :root {
+    color-scheme: light;
+    --blue: #007AFF;
+    --green: #34C759;
+    --red: #FF3B30;
+    --orange: #FF9500;
+    --label: #1C1C1E;
+    --gray: #8E8E93;
+    --gray2: #AEAEB2;
+    --sep: rgba(60, 60, 67, 0.16);
+    --bg: #F2F2F7;
+    --card: #FFFFFF;
+    --radius: 12px;
+  }
+  * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+  body {
+    width: 320px; margin: 0;
+    background: var(--bg);
+    color: var(--label);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
+      "PingFang SC", "Segoe UI", "Microsoft YaHei", sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  /* ---- 顶部标题栏 ---- */
+  .hd {
+    padding: 14px 16px 10px;
+    background: rgba(242, 242, 247, 0.85);
+    -webkit-backdrop-filter: saturate(180%) blur(18px);
+    backdrop-filter: saturate(180%) blur(18px);
+    border-bottom: 0.5px solid var(--sep);
+  }
+  .hd h1 { font-size: 17px; font-weight: 600; margin: 0; letter-spacing: -0.2px; }
+  .hd .ver { font-size: 11.5px; color: var(--gray); margin-top: 2px; }
+
+  .body { padding: 12px 12px 16px; }
+
+  /* ---- 分组容器 ---- */
+  .group {
+    background: var(--card);
+    border-radius: var(--radius);
+    margin-bottom: 14px;
+    overflow: hidden;
+    box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.04);
+  }
+  .group-t {
+    font-size: 11.5px;
+    color: var(--gray);
+    padding: 0 4px 6px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+  }
+
+  /* ---- 分组行（iOS inset grouped 风格）---- */
+  .row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 13px;
+    position: relative;
+    cursor: default;
+  }
+  .row + .row::before {
+    content: "";
+    position: absolute; left: 13px; right: 0; top: 0;
+    height: 0.5px; background: var(--sep);
+  }
+  .row.tap { cursor: pointer; transition: background 0.12s ease; }
+  .row.tap:hover { background: rgba(0, 0, 0, 0.025); }
+  .row.tap:active { background: rgba(0, 0, 0, 0.05); }
+  .row .lbl { flex: 1; min-width: 0; }
+  .row .t1 { font-size: 13.5px; }
+  .row .t2 { font-size: 11.5px; color: var(--gray); margin-top: 1px; line-height: 1.4; }
+  .row .val { font-size: 13px; color: var(--gray); flex: 0 0 auto; }
+  .chev { color: var(--gray2); font-size: 13px; flex: 0 0 auto; }
+
+  /* ---- iOS 开关 ---- */
+  .sw { position: relative; width: 51px; height: 31px; flex: 0 0 auto; }
+  .sw input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; z-index: 1; }
+  .sw .tr {
+    position: absolute; inset: 0; background: #E9E9EA;
+    border-radius: 16px; transition: background 0.22s cubic-bezier(0.32,0.72,0,1);
+  }
+  .sw .kn {
+    position: absolute; top: 2px; left: 2px; width: 27px; height: 27px;
+    background: #fff; border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.16), 0 0 0 0.5px rgba(0,0,0,0.04);
+    transition: transform 0.22s cubic-bezier(0.32,0.72,0,1);
+  }
+  .sw input:checked + .tr { background: var(--green); }
+  .sw input:checked + .tr + .kn { transform: translateX(20px); }
+  .sw input:focus-visible + .tr { box-shadow: 0 0 0 3.5px rgba(0,122,255,0.28); }
+
+  /* ---- 级别图例 ---- */
+  .lvlegend { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; padding: 12px 13px; }
+  .lvlegend .u { text-align: center; }
+  .lvlegend .b {
+    display: flex; align-items: center; justify-content: center;
+    height: 20px; border-radius: 5px; color: #fff;
+    font-size: 11.5px; font-weight: 500;
+  }
+  .lvlegend .n { font-size: 9.5px; color: var(--gray2); margin-top: 3px; letter-spacing: -0.2px; }
+
+  /* ---- 按钮 ---- */
+  .btn {
+    width: 100%; padding: 11px; cursor: pointer;
+    font-size: 14px; font-weight: 500; font-family: inherit;
+    color: var(--blue); background: var(--card);
+    border: none; border-radius: 10px;
+    box-shadow: 0 0.5px 1px rgba(0,0,0,0.04);
+    transition: background 0.12s ease, transform 0.1s ease;
+  }
+  .btn:hover { background: rgba(0,0,0,0.025); }
+  .btn:active { transform: scale(0.985); background: rgba(0,0,0,0.05); }
+  .btn.primary { color: #fff; background: var(--blue); }
+  .btn.primary:hover { background: #0A6FD8; }
+
+  /* ---- 覆盖记录列表 ---- */
+  .ovlist { max-height: 190px; overflow-y: auto; }
+  .ovlist:empty { display: none; }
+  .ov-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 9px 13px; position: relative;
+  }
+  .ov-item + .ov-item::before {
+    content: ""; position: absolute; left: 13px; right: 0; top: 0;
+    height: 0.5px; background: var(--sep);
+  }
+  .ov-lv {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 26px; height: 19px; border-radius: 5px;
+    color: #fff; font-size: 11px; font-weight: 600; flex: 0 0 auto;
+  }
+  .ov-nm { flex: 1; min-width: 0; font-size: 13px;
+           overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ov-dt { font-size: 11px; color: var(--gray2); flex: 0 0 auto; }
+  .ov-del {
+    flex: 0 0 auto; width: 22px; height: 22px; padding: 0;
+    border: none; background: transparent; cursor: pointer;
+    color: var(--gray2); font-size: 16px; line-height: 1;
+    font-family: inherit; border-radius: 50%;
+    transition: background 0.12s ease, color 0.12s ease;
+  }
+  .ov-del:hover { background: rgba(255,59,48,0.1); color: var(--red); }
+
+  .ovbtns { display: flex; gap: 8px; padding: 11px 13px 13px; }
+  .mini {
+    flex: 1; padding: 7px 4px; font-size: 12px; font-weight: 500;
+    font-family: inherit; color: var(--blue);
+    background: rgba(0,122,255,0.1); border: none; border-radius: 8px;
+    cursor: pointer; transition: background 0.12s ease;
+  }
+  .mini:hover { background: rgba(0,122,255,0.18); }
+  .mini.danger { color: var(--red); background: rgba(255,59,48,0.1); }
+  .mini.danger:hover { background: rgba(255,59,48,0.18); }
+
+  /* ---- 诊断区 ---- */
+  .diag { margin: 0 0 14px; }
+  .diag-t { font-size: 11.5px; color: var(--gray); padding: 0 4px 6px; font-weight: 500; }
+  .diag-r {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 7px 13px; position: relative;
+  }
+  .diag-r + .diag-r::before {
+    content: ""; position: absolute; left: 13px; right: 0; top: 0;
+    height: 0.5px; background: var(--sep);
+  }
+  .diag-r .k { font-size: 13px; color: var(--label); }
+  .diag-r .v { font-size: 13px; font-weight: 500; color: var(--gray); }
+  .diag-r .v.good { color: var(--green); }
+  .diag-r .v.bad { color: var(--red); }
+  .diag-note {
+    padding: 9px 13px; font-size: 11.5px; line-height: 1.55;
+    color: var(--gray); border-top: 0.5px solid var(--sep);
+  }
+  .diag-miss {
+    padding: 9px 13px; font-size: 11.5px; line-height: 1.6;
+    color: var(--gray); border-top: 0.5px solid var(--sep);
+    word-break: break-all;
+  }
+  .diag-err {
+    margin: 8px 12px 12px; padding: 9px 11px;
+    background: rgba(255,59,48,0.1); border-radius: 8px;
+    color: #B3201B; font-size: 11.5px; line-height: 1.55;
+  }
+  .diag-err code {
+    background: rgba(0,0,0,0.06); padding: 1px 4px; border-radius: 3px;
+    font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 10.5px;
+  }
+  /* 数据版本行 */
+  .stat {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 7px 13px; position: relative;
+  }
+  .stat + .stat::before {
+    content: ""; position: absolute; left: 13px; right: 0; top: 0;
+    height: 0.5px; background: var(--sep);
+  }
+  .stat .k { font-size: 12.5px; color: var(--label); }
+  .stat .v { font-size: 12.5px; font-weight: 500; color: var(--gray);
+             font-variant-numeric: tabular-nums; }
+
+  /* ---- 提示条 ---- */
+  .note {
+    padding: 10px 12px; font-size: 11.5px; line-height: 1.6;
+    color: #9A5B00; background: rgba(255,149,0,0.12);
+    border-radius: 10px; margin: 0 0 14px;
+  }
+  .note b { font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="hd">
+  <h1>山财期刊标签</h1>
+  <div class="ver" id="ver">正在加载…</div>
+</div>
+
+<div class="body">
+
+  <!-- 显示设置 -->
+  <div class="group-t">显示</div>
+  <div class="group">
+    <div class="row">
+      <div class="lbl">
+        <div class="t1">启用标签显示</div>
+        <div class="t2">关闭后所有页面不再注入标签</div>
+      </div>
+      <label class="sw">
+        <input type="checkbox" id="enabled" checked>
+        <span class="tr"></span><span class="kn"></span>
+      </label>
+    </div>
+    <div class="row">
+      <div class="lbl">
+        <div class="t1">收录与分区标签</div>
+        <div class="t2">CSSCI / CSCD / 中科院分区</div>
+      </div>
+      <span class="val">常开</span>
+    </div>
+  </div>
+
+  <!-- 级别图例 -->
+  <div class="group-t">期刊级别</div>
+  <div class="group">
+    <div class="lvlegend" id="legend"></div>
+  </div>
+
+  <!-- 操作 -->
+  <div class="group">
+    <div class="row tap" id="ovToggle">
+      <div class="lbl">
+        <div class="t1">人工核实的级别调整</div>
+        <div class="t2" id="ovCount">加载中…</div>
+      </div>
+      <span class="chev" id="ovArrow">›</span>
+    </div>
+    <div id="ovPanel" style="display:none">
+      <div class="ovlist" id="ovList"></div>
+      <div class="ovbtns">
+        <button id="ovExport" class="mini">导出</button>
+        <button id="ovImport" class="mini">导入</button>
+        <button id="ovClear" class="mini danger">清空</button>
+      </div>
+      <input type="file" id="ovFile" accept=".json" style="display:none">
+    </div>
+  </div>
+
+  <button id="rescan" class="btn primary">重新扫描当前页面</button>
+
+  <!-- 诊断 -->
+  <div class="diag" id="diag" style="display:none">
+    <div class="diag-t">本页诊断</div>
+    <div class="group"><div id="diagBody"></div></div>
+  </div>
+
+  <!-- 数据版本 -->
+  <div class="group-t">数据版本</div>
+  <div class="group"><div id="info"></div></div>
+
+  <div class="note" id="warn" style="display:none"></div>
+
+</div>
+
+<script src="popup.js"></script>
+</body>
+</html>

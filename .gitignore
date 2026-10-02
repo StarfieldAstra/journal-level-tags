@@ -1,0 +1,29 @@
+# 开发期文件
+preview.html
+logo-preview.png
+node_modules/
+.stash/
+
+# 原始数据（大文件，从 build_data.py 的数据源目录读取，不入库）
+fq*.csv
+warning_*.csv
+
+# 发布目录：只保留安装包与校验和（供 GitHub Release 下载）
+# extension/ 会在发布时由 release/extension 直接提供
+release/*
+!release/journal-level-tags-v*.zip
+!release/SHA256SUMS.txt
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# WorkBuddy 本地工作记录（私有，不入库）
+.workbuddy/
+
+# 商店上架材料（已放弃上架，如需恢复见 git 历史）
+package_for_store.js
+
+# 一次性辅助工具
+host_helper.py
+make_icons.js

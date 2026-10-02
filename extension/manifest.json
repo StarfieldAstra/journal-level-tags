@@ -1,0 +1,94 @@
+{
+  "manifest_version": 3,
+  "name": "山财期刊标签",
+  "version": "1.0.0",
+  "short_description": "在知网、Web of Science 等学术平台直接显示 CSSCI / CSCD 收录、中科院分区与期刊级别。",
+  "description": "在知网、Web of Science、Google 学术等学术检索平台，直接在检索结果中的刊名旁显示期刊评价标签：CSSCI 来源/扩展版、CSCD 核心库/扩展库、中科院分区（含大类与小类），以及依据校内科研成果管理办法判定的期刊级别。\n\n【数据版本】CSSCI 2025-2026、CSCD 2025-2026、中科院分区 2025 年版（终版）。\n\n【隐私】全部数据内置于插件内，运行时不发起任何网络请求，不收集、不上传任何浏览记录或检索内容，断网亦可正常使用。",
+  "icons": {
+    "16": "icon16.png",
+    "32": "icon32.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "https://kns.cnki.net/*",
+    "https://www.cnki.net/*",
+    "https://*.webofscience.com/*",
+    "https://*.clarivate.com/*",
+    "https://scholar.google.com/*",
+    "https://scholar.google.com.hk/*",
+    "https://scholar.google.co.jp/*",
+    "https://scholar.google.co.uk/*",
+    "https://xueshu.baidu.com/*",
+    "https://www.sciencedirect.com/*",
+    "https://pubmed.ncbi.nlm.nih.gov/*",
+    "https://link.springer.com/*",
+    "https://www.semanticscholar.org/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://kns.cnki.net/*",
+        "https://www.cnki.net/*",
+        "https://*.webofscience.com/*",
+        "https://*.clarivate.com/*",
+        "https://scholar.google.com/*",
+        "https://scholar.google.com.hk/*",
+        "https://scholar.google.co.jp/*",
+        "https://scholar.google.co.uk/*",
+        "https://xueshu.baidu.com/*",
+        "https://www.sciencedirect.com/*",
+        "https://pubmed.ncbi.nlm.nih.gov/*",
+        "https://link.springer.com/*",
+        "https://www.semanticscholar.org/*"
+      ],
+      "js": [
+        "core/judge.js",
+        "sites/index.js",
+        "content.js"
+      ],
+      "css": [
+        "style.css"
+      ],
+      "run_at": "document_idle",
+      "all_frames": false
+    }
+  ],
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "山财期刊标签"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "data/journals.json",
+        "data/cas_detail.json",
+        "selftest.html",
+        "selftest.js",
+        "core/judge.js",
+        "sites/index.js"
+      ],
+      "matches": [
+        "https://kns.cnki.net/*",
+        "https://www.cnki.net/*",
+        "https://*.webofscience.com/*",
+        "https://*.clarivate.com/*",
+        "https://scholar.google.com/*",
+        "https://scholar.google.com.hk/*",
+        "https://scholar.google.co.jp/*",
+        "https://scholar.google.co.uk/*",
+        "https://xueshu.baidu.com/*",
+        "https://www.sciencedirect.com/*",
+        "https://pubmed.ncbi.nlm.nih.gov/*",
+        "https://link.springer.com/*",
+        "https://www.semanticscholar.org/*"
+      ]
+    }
+  ]
+}

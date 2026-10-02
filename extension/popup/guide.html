@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>山财期刊标签 — 使用说明</title>
+<style>
+  /* Apple HIG 风格说明页 */
+  :root {
+    color-scheme: light;
+    --blue: #007AFF;
+    --green: #34C759;
+    --red: #FF3B30;
+    --orange: #FF9500;
+    --teal: #30B0C7;
+    --indigo: #5856D6;
+    --purple: #AF52DE;
+    --gray: #8E8E93;
+    --label: #1C1C1E;
+    --sep: rgba(60, 60, 67, 0.16);
+    --bg: #F2F2F7;
+    --card: #FFFFFF;
+  }
+  * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+
+  body {
+    max-width: 780px; margin: 0 auto; padding: 44px 22px 72px;
+    background: var(--bg); color: var(--label);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
+      "PingFang SC", "Segoe UI", "Microsoft YaHei", sans-serif;
+    font-size: 15px; line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  header { margin-bottom: 30px; }
+  h1 { font-size: 30px; font-weight: 700; margin: 0 0 5px; letter-spacing: -0.5px; }
+  .sub { font-size: 15px; color: var(--gray); }
+
+  h2 {
+    font-size: 19px; font-weight: 600; margin: 38px 0 12px;
+    letter-spacing: -0.2px;
+  }
+  h3 { font-size: 16px; font-weight: 600; margin: 24px 0 8px; }
+
+  p { margin: 10px 0; }
+
+  /* 卡片 */
+  .card {
+    background: var(--card); border-radius: 14px; padding: 18px 20px;
+    margin: 16px 0;
+    box-shadow: 0 0.5px 1px rgba(0,0,0,0.04);
+  }
+
+  /* 提示条 */
+  .note {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 14px 16px; border-radius: 12px; margin: 16px 0; font-size: 14px;
+    line-height: 1.65;
+  }
+  .note .ic { flex: 0 0 auto; font-size: 16px; line-height: 1.4; }
+  .note.warn { background: rgba(255,149,0,0.12); color: #8A5200; }
+  .note.info { background: rgba(0,122,255,0.1); color: #004E9C; }
+  .note.ok   { background: rgba(52,199,89,0.12); color: #166B33; }
+  .note b { font-weight: 600; }
+
+  /* 表格 */
+  table {
+    width: 100%; border-collapse: collapse; margin: 14px 0;
+    background: var(--card); border-radius: 12px; overflow: hidden;
+    font-size: 14px;
+    box-shadow: 0 0.5px 1px rgba(0,0,0,0.04);
+  }
+  th, td { padding: 11px 15px; text-align: left; vertical-align: top; }
+  th {
+    background: rgba(0,0,0,0.02); font-weight: 600; font-size: 13px;
+    color: var(--gray); border-bottom: 0.5px solid var(--sep);
+  }
+  td + td, th + th { border-left: 0.5px solid var(--sep); }
+  td:first-child, th:first-child { width: 62px; }
+  tbody tr + tr td { border-top: 0.5px solid var(--sep); }
+
+  /* 级别徽标 */
+  .lv {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 30px; padding: 0 8px; height: 21px; border-radius: 6px;
+    color: #fff; font-size: 12.5px; font-weight: 600; flex: 0 0 auto;
+  }
+  .A1{background:#FF3B30} .A2{background:#FF9500} .A3{background:#30B0C7}
+  .A4{background:#007AFF} .B1{background:#5856D6} .B2{background:#AF52DE}
+  .C{background:#8E8E93}
+
+  code {
+    background: rgba(0,0,0,0.05); padding: 2px 6px; border-radius: 5px;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 13px; color: #1C1C1E;
+  }
+  ol, ul { padding-left: 22px; margin: 10px 0; }
+  li { margin: 7px 0; }
+
+  .muted { color: var(--gray); font-size: 13.5px; }
+  footer {
+    margin-top: 44px; padding-top: 18px; border-top: 0.5px solid var(--sep);
+    font-size: 13px; color: var(--gray);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>山财期刊标签</h1>
+  <div class="sub">在知网、Web of Science、Google 学术等平台直接显示 CSSCI / CSCD 收录、中科院分区与本校期刊级别。</div>
+</header>
+
+<div class="note ok">
+  <span class="ic">✓</span>
+  <div><b>完全本地运行。</b>插件不发起任何网络请求，全部数据内置在你的电脑上，断网也能用，检索记录不会外泄。</div>
+</div>
+
+<h2>级别体系</h2>
+<p>依据 <b>本校科研成果管理办法</b>《本校科研成果管理办法》，学术论文共七级：</p>
+
+<table>
+  <thead><tr><th>级别</th><th>认定口径</th></tr></thead>
+  <tbody>
+    <tr><td><span class="lv A1">A1</span></td><td>附件 1 所列 11 种期刊；或被《新华文摘》全文转载</td></tr>
+    <tr><td><span class="lv A2">A2</span></td><td>附件 1 所列 46 种期刊；或中科院 SCI/SSCI <b>1 区</b></td></tr>
+    <tr><td><span class="lv A3">A3</span></td><td>附件 1 目录外的 CSSCI 来源 / CSCD 核心期刊，<b>且</b>满足山西省教育厅「国家级学术刊物」认定；或中科院 <b>2 区</b></td></tr>
+    <tr><td><span class="lv A4">A4</span></td><td>附件 1 目录外的 CSSCI 来源 / CSCD 核心期刊；或中科院 <b>3、4 区</b></td></tr>
+    <tr><td><span class="lv B1">B1</span></td><td>CSSCI 扩展版、CSCD 扩展库、北大核心、EI（JA）、A&amp;HCI</td></tr>
+    <tr><td><span class="lv B2">B2</span></td><td>社科院 AMI 核心期刊</td></tr>
+    <tr><td><span class="lv C">C</span></td><td>其他 CN/ISSN 报刊；<b>列入中科院国际期刊预警名单者直接按 C</b></td></tr>
+  </tbody>
+</table>
+
+<h2>数据版本</h2>
+<table>
+  <thead><tr><th>数据</th><th>版本</th><th>说明</th></tr></thead>
+  <tbody>
+    <tr><td>CSSCI</td><td>2025–2026</td><td>来源版 671 种、扩展版 261 种</td></tr>
+    <tr><td>CSCD</td><td>2025–2026</td><td>核心库 1110 种、扩展库 366 种</td></tr>
+    <tr><td>中科院分区</td><td><b>2025 年版（终版）</b></td><td>21772 条，含大类/小类分区</td></tr>
+    <tr><td>校级附件 1</td><td>2023 版</td><td>A1 目录 11 种、A2 目录 46 种</td></tr>
+    <tr><td>国际期刊预警</td><td>2020–2025 累计</td><td>134 种，命中即判 C</td></tr>
+  </tbody>
+</table>
+
+<div class="note warn">
+  <span class="ic">⚠</span>
+  <div><b>中科院分区表已停止更新。</b>中科院文献情报中心公告：自 2026 年起不再更新与发布期刊分区表。本插件内置的 2025 年 3 月 20 日版本是<b>最后一版</b>，此后不会过期，但也<b>不会有新版</b>。</div>
+</div>
+
+<h2>已知局限</h2>
+
+<div class="note info">
+  <span class="ic">i</span>
+  <div>
+    <b>1. A3 级需要「主办单位」信息 —— 可人工覆盖。</b><br>
+    A3 要求期刊「同时满足山西省教育厅国家级学术刊物认定」，而该认定看的是<b>主办单位性质</b>。
+    主办单位数据无法自动获取（实测：知网 kns / navi 均为滑块验证码，维普 412 反爬，CSSCI 官方目录 PDF 是扫描件且本身不含主办单位列）。<br><br>
+    插件内置一份<b>已核实主办单位的 A3 白名单</b>（336 条）。命中 → 判 A3；未命中 → 判 A4，
+    此时<b>详情浮层里会出现「主办单位属国家级 → 升为 A3」按钮</b>，你核实后点一下即可，设置永久生效。
+  </div>
+</div>
+
+<div class="card">
+  <h3>人工覆盖的规则</h3>
+  <ul>
+    <li><b>只允许在 A3 ↔ A4 之间调整</b>，不能改成 A1/A2/B1/C —— 收录状态由数据决定，人为改会绕过办法的认定规则</li>
+    <li><b>预警名单的一票否决优先于覆盖</b>：被列入中科院预警名单的刊，无论怎么覆盖都仍是 C（办法第十四条）</li>
+    <li>刊名按归一化匹配，「经济学（季刊）」与「经济学(季刊)」视为同一刊</li>
+    <li>记录保存在浏览器本地，<b>永久生效，不上传任何数据</b></li>
+    <li>设置面板里可查看、逐条删除、导出/导入备份、清空</li>
+  </ul>
+</div>
+
+<div class="card">
+  <p><b>其他数据缺口：</b></p>
+  <ul style="margin-bottom:0">
+    <li><b>CSSCI 集刊未收录</b>（约 200 余种）。遇到集刊时显示为 C。</li>
+    <li><b>北大核心、AMI 核心未收录</b>，影响 B2 级与部分 B1 判定。</li>
+    <li>少数期刊在不同平台刊名写法不一致，可能匹配失败（此时不显示标签，不报错）。</li>
+    <li>判定仅供参考，正式认定以学校科研处文件为准。</li>
+  </ul>
+</div>
+
+<h2>支持的网站</h2>
+<table>
+  <thead><tr><th>网站</th><th>状态</th></tr></thead>
+  <tbody>
+    <tr><td>中国知网 kns.cnki.net</td><td>已适配（含 WebVPN 访问）</td></tr>
+    <tr><td>Web of Science</td><td>已适配（新旧两版界面）</td></tr>
+    <tr><td>Google 学术</td><td>已适配（刊名被截断时可能不显示）</td></tr>
+    <tr><td>百度学术</td><td>已适配</td></tr>
+    <tr><td>ScienceDirect</td><td>已适配</td></tr>
+    <tr><td>PubMed</td><td>已适配</td></tr>
+    <tr><td>Springer Link</td><td>已适配</td></tr>
+    <tr><td>Semantic Scholar</td><td>已适配</td></tr>
+  </tbody>
+</table>
+<p class="muted">网站改版可能导致选择器失效。遇到不显示的情况，在扩展页点「重新扫描当前页面」；仍无效则需更新适配器。面板底部会显示「本页诊断」，可直接看出是选择器失效还是数据未匹配。</p>
+
+<h2>使用方式</h2>
+<ol>
+  <li>打开浏览器扩展管理页（Chrome / Edge 地址栏输入 <code>chrome://extensions</code> 或 <code>edge://extensions</code>）。</li>
+  <li>开启右上角「开发者模式」。</li>
+  <li>点击「加载已解压的扩展程序」，选择本文件夹（即含有 <code>manifest.json</code> 的 <code>extension</code> 目录）。</li>
+  <li>完成。打开知网或 Google 学术检索，刊名后即出现标签。</li>
+</ol>
+
+<div class="note info">
+  <span class="ic">i</span>
+  <div>点击标签可展开详情：ISSN、收录库、中科院大类与小类分区、预警信息、完整判定理由，并可在此人工调整级别。</div>
+</div>
+
+<footer>
+  依据本校科研成果管理办法｜CSSCI 2025-2026｜CSCD 2025-2026｜中科院 2025 终版
+</footer>
+
+</body>
+</html>

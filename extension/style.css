@@ -1,0 +1,325 @@
+/* 山财期刊标签 — 注入样式
+ *
+ * 设计语言：Apple Human Interface Guidelines（iOS 17 / macOS Sonoma）
+ * ── 配色：iOS 系统语义色（systemRed / Orange / Teal / Blue / Gray）
+ *    级别由高到低用 systemRed → Orange → Teal → Blue → Gray 递进降饱和，
+ *    天然传达"等级下降"的语义，且色相跨度大、色弱友好。
+ * ── 形状：统一 6px 圆角标签 + 18px 圆角浮层 + 0.5px hairline 描边
+ * ── 浮层：backdrop-filter 毛玻璃，浅色/深色网站背景下均清晰
+ * ── 字体：-apple-system (SF Pro) 优先
+ */
+
+/* ================================================================
+   主标签：山财级别
+   ================================================================ */
+.sxfx-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-left: 6px;
+  padding: 0 8px;
+  height: 21px;
+  border-radius: 6px;                 /* iOS 风格圆角 */
+  font-size: 12px;
+  line-height: 21px;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    "PingFang SC", "Segoe UI", "Microsoft YaHei", sans-serif;
+  font-weight: 500;                    /* SF Pro Medium */
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none;
+  border: none;                        /* iOS 语义色为实心，无描边 */
+  transition: transform 0.15s cubic-bezier(0.32, 0.72, 0, 1),
+              filter 0.15s ease;
+}
+
+/* hover 时轻微上浮 + 提亮，模拟 iOS 按钮反馈 */
+.sxfx-tag:hover {
+  transform: translateY(-0.5px);
+  filter: saturate(1.08) brightness(1.04);
+}
+.sxfx-tag:active {
+  transform: scale(0.96);
+}
+
+/* 级别前缀圆点：改用小圆片，视觉更接近 SF Symbols 的胶囊标记 */
+.sxfx-tag::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 1.5px;
+  background: currentColor;
+  opacity: 0.85;
+  flex: 0 0 auto;
+}
+
+/* ---- 级别色阶：systemRed → Orange → Teal → Blue → Gray ---- */
+.sxfx-lv-A1 { background: #FF3B30; color: #FFFFFF; }  /* systemRed */
+.sxfx-lv-A2 { background: #FF9500; color: #FFFFFF; }  /* systemOrange */
+.sxfx-lv-A3 { background: #30B0C7; color: #FFFFFF; }  /* systemTeal */
+.sxfx-lv-A4 { background: #007AFF; color: #FFFFFF; }  /* systemBlue */
+.sxfx-lv-B1 { background: #5856D6; color: #FFFFFF; }  /* systemIndigo */
+.sxfx-lv-B2 { background: #AF52DE; color: #FFFFFF; }  /* systemPurple */
+.sxfx-lv-C  { background: #8E8E93; color: #FFFFFF; }  /* systemGray */
+.sxfx-lv-none { background: #C7C7CC; color: #FFFFFF; } /* systemGray4 */
+
+/* ================================================================
+   辅助标签：收录库 / 中科院分区
+   iOS 风格 tinted 底色 —— 极浅背景 + 同色系深文字，无描边
+   ================================================================ */
+.sxfx-tag.sxfx-aux {
+  height: 18px;
+  padding: 0 7px;
+  font-size: 11px;
+  line-height: 18px;
+  font-weight: 400;                    /* SF Pro Regular */
+  border-radius: 5px;
+  letter-spacing: 0;
+  /* 默认（未知类型） */
+  background: rgba(120, 120, 128, 0.12);
+  color: #3A3A3C;
+  filter: saturate(0.9);
+}
+.sxfx-tag.sxfx-aux:hover { transform: none; filter: saturate(1.05) brightness(0.98); }
+.sxfx-tag.sxfx-aux:active { transform: none; }
+.sxfx-tag.sxfx-aux::before { display: none; }  /* 辅助标签不加圆点 */
+
+/* CSSCI —— systemYellow tinted */
+.sxfx-aux.sxfx-cssci-source { background: rgba(255, 204, 0, 0.18); color: #7A5C00; }
+.sxfx-aux.sxfx-cssci-ext    { background: rgba(255, 204, 0, 0.10); color: #8A6D00; }
+/* CSCD —— systemBlue tinted */
+.sxfx-aux.sxfx-cscd-core   { background: rgba(0, 122, 255, 0.14); color: #0055B8; }
+.sxfx-aux.sxfx-cscd-ext    { background: rgba(0, 122, 255, 0.08); color: #0060DF; }
+/* 中科院分区 —— systemRed → systemTeal 递进 */
+.sxfx-aux.sxfx-cas-1 { background: rgba(255, 59, 48, 0.15); color: #C9252D; }
+.sxfx-aux.sxfx-cas-2 { background: rgba(255, 149, 0, 0.16); color: #B25000; }
+.sxfx-aux.sxfx-cas-3 { background: rgba(48, 176, 199, 0.18); color: #00707F; }
+.sxfx-aux.sxfx-cas-4 { background: rgba(142, 142, 147, 0.18); color: #48484A; }
+/* Top / 预警 */
+.sxfx-aux.sxfx-top {
+  background: rgba(255, 204, 0, 0.22); color: #7A5C00; font-weight: 500;
+}
+.sxfx-aux.sxfx-warning {
+  background: rgba(255, 59, 48, 0.16); color: #C9252D; font-weight: 500;
+}
+
+/* ================================================================
+   详情浮层
+   毛玻璃 + 18px 圆角 + hairline 描边
+   ================================================================ */
+.sxfx-pop {
+  position: absolute;
+  z-index: 2147483000;
+  min-width: 264px;
+  max-width: 352px;
+  padding: 13px 15px 12px;
+  /* 毛玻璃：半透明 + 背景模糊，深色页面上文字仍以深色为主，故底色固定偏亮 */
+  background: rgba(250, 250, 252, 0.78);
+  -webkit-backdrop-filter: saturate(180%) blur(24px);
+  backdrop-filter: saturate(180%) blur(24px);
+  color: #1C1C1E;                     /* systemLabel */
+  border: 0.5px solid rgba(60, 60, 67, 0.18);  /* hairline separator */
+  border-radius: 18px;
+  box-shadow:
+    0 1px 1px rgba(0, 0, 0, 0.04),
+    0 8px 24px rgba(0, 0, 0, 0.12);   /* iOS 弹层阴影：两层叠加 */
+  font-size: 12.5px;
+  line-height: 1.55;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    "PingFang SC", "Segoe UI", "Microsoft YaHei", sans-serif;
+  text-align: left;
+  white-space: normal;
+  animation: sxfx-pop-in 0.18s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@keyframes sxfx-pop-in {
+  from { opacity: 0; transform: scale(0.94) translateY(-4px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sxfx-pop { animation: none; }
+  .sxfx-tag { transition: none; }
+}
+
+/* 标题栏 */
+.sxfx-pop-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;                    /* SF Pro Semibold */
+  color: #1C1C1E;
+  padding-bottom: 9px;
+  margin-bottom: 9px;
+  border-bottom: 0.5px solid rgba(60, 60, 67, 0.14);
+}
+
+/* 键值行 */
+.sxfx-pop-row {
+  display: flex;
+  gap: 10px;
+  margin: 4px 0;
+  align-items: baseline;
+}
+.sxfx-pop-k {
+  flex: 0 0 58px;
+  color: #8E8E93;                       /* systemGray2 → 次要文字 */
+  font-size: 11.5px;
+  font-weight: 400;
+}
+.sxfx-pop-v { flex: 1; color: #1C1C1E; min-width: 0; word-break: break-word; }
+
+/* 浮层内的级别徽标 */
+.sxfx-pop-lv {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 9px;
+  height: 22px;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  flex: 0 0 auto;
+}
+
+/* 判定理由 */
+.sxfx-pop-reason {
+  margin-top: 9px;
+  padding-top: 8px;
+  border-top: 0.5px solid rgba(60, 60, 67, 0.14);
+  color: #636366;                       /* systemGray */
+  font-size: 11.5px;
+  line-height: 1.6;
+}
+
+/* 待核实提示 —— systemOrange tinted */
+.sxfx-pop-warn {
+  margin-top: 8px;
+  padding: 7px 9px;
+  background: rgba(255, 149, 0, 0.12);
+  border-radius: 10px;
+  color: #9A5B00;
+  font-size: 11.5px;
+  line-height: 1.55;
+}
+
+/* 已覆盖标记 —— systemGreen tinted */
+.sxfx-pop-ov {
+  margin-top: 8px;
+  padding: 6px 9px;
+  background: rgba(52, 199, 89, 0.13);
+  border-radius: 10px;
+  color: #1B7A38;
+  font-size: 11.5px;
+  font-weight: 500;
+}
+
+/* 页脚 */
+.sxfx-pop-foot {
+  margin-top: 9px;
+  padding-top: 8px;
+  border-top: 0.5px solid rgba(60, 60, 67, 0.1);
+  color: #AEAEB2;                       /* systemGray3 */
+  font-size: 10.5px;
+  line-height: 1.5;
+}
+
+/* ================================================================
+   人工覆盖按钮
+   ================================================================ */
+.sxfx-pop-act { margin-top: 10px; }
+
+.sxfx-pop-btn {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 12.5px;
+  font-family: inherit;
+  font-weight: 500;
+  color: #007AFF;                       /* systemBlue，文字按钮 */
+  background: rgba(0, 122, 255, 0.1);
+  border: none;
+  border-radius: 11px;                 /* iOS 按钮圆角 */
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.12s ease;
+}
+.sxfx-pop-btn:hover:not(:disabled) { background: rgba(0, 122, 255, 0.18); }
+.sxfx-pop-btn:active:not(:disabled) { transform: scale(0.97); }
+.sxfx-pop-btn:disabled { opacity: 0.5; cursor: default; }
+
+/* 主操作：填充式按钮 */
+.sxfx-pop-btn.primary {
+  color: #FFFFFF;
+  background: #007AFF;
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0, 122, 255, 0.28);
+}
+.sxfx-pop-btn.primary:hover:not(:disabled) { background: #0A6FD8; }
+
+/* ================================================================
+   提示条（覆盖成功等）
+   ================================================================ */
+.sxfx-hint {
+  position: fixed;
+  left: 50%;
+  bottom: 34px;
+  transform: translateX(-50%);
+  z-index: 2147483000;
+  display: none;
+  padding: 10px 18px;
+  background: rgba(28, 28, 30, 0.82);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+  color: #FFFFFF;
+  border-radius: 22px;                 /* 胶囊形 */
+  font-size: 13px;
+  font-weight: 500;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    "PingFang SC", "Segoe UI", "Microsoft YaHei", sans-serif;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  white-space: nowrap;
+  animation: sxfx-hint-in 0.24s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@keyframes sxfx-hint-in {
+  from { opacity: 0; transform: translate(-50%, 10px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sxfx-hint { animation: none; }
+}
+
+/* ================================================================
+   中科院小类分区列表
+   ================================================================ */
+.sxfx-pop-minors {
+  margin: 5px 0 2px;
+  padding: 0;
+  list-style: none;
+  max-height: 158px;
+  overflow-y: auto;
+  /* 细滚动条 */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(60, 60, 67, 0.22) transparent;
+}
+.sxfx-pop-minors::-webkit-scrollbar { width: 4px; }
+.sxfx-pop-minors::-webkit-scrollbar-track { background: transparent; }
+.sxfx-pop-minors::-webkit-scrollbar-thumb {
+  background: rgba(60, 60, 67, 0.22);
+  border-radius: 2px;
+}
+.sxfx-pop-minors li {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 2.5px 0;
+  color: #3A3A3C;
+  font-size: 11.5px;
+}
+.sxfx-pop-minors li span:last-child {
+  flex: 0 0 auto;
+  font-weight: 600;
+  color: #007AFF;
+}

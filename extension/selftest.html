@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>山财期刊标签 — 适配器自检</title>
+<style>
+  body { font-family: -apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Segoe UI","Microsoft YaHei",sans-serif;
+         margin: 0; padding: 30px 24px; background: #F2F2F7; color: #1C1C1E; font-size: 14px; }
+  .wrap { max-width: 940px; margin: 0 auto; }
+  h1 { font-size: 26px; font-weight: 700; letter-spacing:-.4px; margin: 0 0 4px; }
+  .sub { color: #8E8E93; font-size: 14px; margin-bottom: 24px; }
+  h2 { font-size: 18px; font-weight: 600; margin: 32px 0 10px; }
+  .box { background:#fff; border:0; border-radius:14px; padding:18px 20px; margin-bottom:16px; box-shadow:0 0.5px 1px rgba(0,0,0,.04); }
+  .tip { background: #EFF6FF; border: 1px solid #BFDBFE; color: #1E40AF;
+         padding: 11px 14px; border-radius: 7px; font-size: 13px; line-height: 1.65; margin-bottom: 18px; }
+  .tip code { background: rgba(0,0,0,.05); padding: 1px 5px; border-radius: 4px; }
+  table { width:100%; border-collapse: collapse; font-size: 13.5px; background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 .5px 1px rgba(0,0,0,.04); }
+  th, td { padding: 10px 14px; text-align: left; border-bottom:.5px solid rgba(60,60,67,.16); }
+  th { background: rgba(0,0,0,.02); font-weight: 600; font-size: 12.5px; color:#8E8E93; }
+  .yes { color: #34C759; font-weight: 600; }
+  .no  { color: #FF3B30; font-weight: 600; }
+  .row-echo { display:flex; align-items:baseline; gap:8px; padding:4px 0; font-size:13px; }
+  .row-echo .idx { color:#8E8E93; flex:0 0 20px; }
+  .row-echo .nm  { color:#007AFF; }
+  .row-echo .raw { color:#8E8E93; font-size:11.5px; }
+  .tag { display:inline-flex; align-items:center; gap:3px; margin-left:6px; padding:0 8px;
+         height:21px; border-radius:6px; font-size:12px; line-height:21px; font-weight:500;
+         color:#fff; white-space:nowrap; vertical-align:middle; }
+  .tag::before { content:""; width:5px; height:5px; border-radius:1.5px; background:currentColor; opacity:.85; }
+  .A1{background:#FF3B30}.A2{background:#FF9500}.A3{background:#30B0C7}.A4{background:#007AFF}
+  .B1{background:#5856D6}.C{background:#8E8E93}
+  .aux { height:18px; padding:0 7px; font-size:11px; font-weight:400; border-radius:5px; }
+  .aux::before { display:none; }
+  .cssci-s{background:rgba(255,204,0,.18);color:#7A5C00}
+  .cscd-c{background:rgba(0,122,255,.14);color:#0055B8}
+  .foot { margin-top: 26px; padding-top: 14px; border-top:1px solid #E5E7EB; font-size:12px; color:#8E8E93; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>适配器自检页</h1>
+  <div class="sub">用真实的知网 DOM 结构验证选择器是否抓对了「来源」列（即刊名），而不是「题名」列。</div>
+
+  <div class="tip">
+    <b>为什么需要这一页：</b>插件曾在知网抓错列——抓的是论文题名而非刊名，导致一条标签都不显示。
+    本页把知网真实表格结构原样搬过来，跑同一套选择器，确保不会再犯同样的错。
+  </div>
+
+  <h2>一、表格结构识别</h2>
+  <div class="box">
+    <table class="result-table-list" id="tbl">
+      <thead>
+        <tr><th>题名</th><th>作者</th><th>来源</th><th>发表时间</th><th>数据库</th><th>被引</th><th>下载</th><th>操作</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="name"><a class="fz14" href="#">某期刊上的示例论文标题（一）</a></td>
+          <td class="author"><a>张三</a>;李四</td>
+          <td class="source"><a href="#">环境科学学报</a></td>
+          <td class="date">2026-07-17<br>14:20</td><td class="data">期刊</td><td class="quote">162</td><td class="download">1</td><td class="oper"></td>
+        </tr>
+        <tr>
+          <td class="name"><a class="fz14" href="#">某期刊上的示例论文标题（二）</a></td>
+          <td class="author"><a>张三</a>;王五;赵六;钱七</td>
+          <td class="source"><a href="#">环境科学</a></td>
+          <td class="date">2026-07-10<br>15:20</td><td class="data">期刊</td><td class="quote">64</td><td class="download">1</td><td class="oper"></td>
+        </tr>
+        <tr>
+          <td class="name"><a class="fz14" href="#">某期刊上的示例论文标题（三）</a></td>
+          <td class="author"><a>张三</a>;王五;周九</td>
+          <td class="source"><a href="#">环境科学</a></td>
+          <td class="date">2026-05-25<br>13:37</td><td class="data">期刊</td><td class="quote">631</td><td class="download">1</td><td class="oper"></td>
+        </tr>
+        <tr>
+          <td class="name"><a class="fz14" href="#">某期刊上的示例论文标题（四）</a></td>
+          <td class="author"><a>张三</a>;王五;孙八;周九</td>
+          <td class="source"><a href="#">环境工程技术学报</a></td>
+          <td class="date">2026-04-29<br>14:14</td><td class="data">期刊</td><td class="quote">1012</td><td class="download">1</td><td class="oper"></td>
+        </tr>
+        <tr>
+          <td class="name"><a class="fz14" href="#">某期刊上的示例论文标题（五）</a></td>
+          <td class="author"><a>张三</a>;孙八;吴十</td>
+          <td class="source"><a href="#">环境科学</a></td>
+          <td class="date">2026-02-04<br>15:30</td><td class="data">期刊</td><td class="quote">2</td><td class="download">1043</td><td class="oper"></td>
+        </tr>
+        <tr>
+          <td class="name"><a class="fz14" href="#">某期刊上的示例论文标题（六）</a></td>
+          <td class="author"><a>张三</a></td>
+          <td class="source"><a href="#">环境科学</a></td>
+          <td class="date">2025-06-17<br>10:02</td><td class="data">期刊</td><td class="quote">8</td><td class="download">1982</td><td class="oper"></td>
+        </tr>
+        <tr>
+          <td class="name"><a class="fz14" href="#">某学位论文的示例标题（七）</a></td>
+          <td class="author"><a></a></td>
+          <td class="source"><a href="#">上海海关学院</a></td>
+          <td class="date">2022-05-18</td><td class="data">硕士</td><td class="quote">782</td><td class="download">1</td><td class="oper"></td>
+        </tr>
+        <tr>
+          <td class="name"><a class="fz14" href="#">某期刊上的示例论文标题（八）</a></td>
+          <td class="author"><a></a></td>
+          <td class="source"><a href="#">信息化建设</a></td>
+          <td class="date">2016-03-15</td><td class="data">期刊</td><td class="quote">2</td><td class="download">121</td><td class="oper"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>二、选择器抓取结果</h2>
+  <div class="box" id="probe">运行中…</div>
+
+  <h2>三、判定结果</h2>
+  <div class="box" id="judge">运行中…</div>
+
+  <h2>四、预期</h2>
+  <div class="box">
+    <table>
+      <tr><th>刊名</th><th>预期级别</th><th>依据</th><th>是否应显示标签</th></tr>
+      <tr><td>环境科学学报</td><td><span class="tag A2">A2</span></td><td>校级 A 级目录 + CSCD 核心库</td><td class="yes">应显示</td></tr>
+      <tr><td>环境科学</td><td><span class="tag A4">A4</span></td><td>CSCD 核心库，不在附件1 目录</td><td class="yes">应显示</td></tr>
+      <tr><td>环境工程技术学报</td><td><span class="tag A4">A4</span></td><td>CSCD 核心库</td><td class="yes">应显示</td></tr>
+      <tr><td>上海海关学院</td><td>—</td><td>不在任何目录（且是硕士论文的学位授予单位）</td><td class="no">不显示</td></tr>
+      <tr><td>信息化建设</td><td>—</td><td>不在任何目录</td><td class="no">不显示</td></tr>
+    </table>
+    <p style="font-size:12.5px;color:#6B7280;line-height:1.7;margin:12px 0 0">
+      「不显示」是<b>正确行为</b>：插件只给收录期刊挂标签，避免满屏噪声。
+    </p>
+    <p style="font-size:12.5px;color:#92400E;line-height:1.7;margin:8px 0 0">
+      <b>关于 A3 人工覆盖：</b>A3 需核实主办单位，而主办单位无法自动获取（知网/维普均有反爬）。
+      在实际使用中，你核实后点击详情浮层里的「升为 A3」即可，设置永久生效。
+      上表「环境科学」目前自动判 A4 —— 若你确认其主办单位属国家级认定范围，
+      在知网页面上点开该刊标签后点「升为 A3」即可，本页会同步显示「← 人工覆盖」标记。
+    </p>
+  </div>
+
+  <div class="foot">
+    本页仅跑选择器与判定逻辑，不涉及网络请求。如与知网实际行为不符，说明知网改版了，需要更新
+    <code>extension/sites/index.js</code> 中的 CNKI 适配器。
+  </div>
+</div>
+
+<script src="core/judge.js"></script>
+<script src="sites/index.js"></script>
+<script src="selftest.js"></script>
+</body>
+</html>
