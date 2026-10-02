@@ -42,7 +42,9 @@
   line-height: 21px;
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
     "PingFang SC", "Segoe UI", "Microsoft YaHei", sans-serif;
-  font-weight: 500;                    /* SF Pro Medium */
+  /* 统一 500 字重 + 0.2px 字距：字重/字距不同会导致同尺寸文字宽度不同，
+     进而使各类标签的宽度不一致。 */
+  font-weight: 500;
   letter-spacing: 0.2px;
   white-space: nowrap;
   vertical-align: middle;
@@ -85,36 +87,40 @@
 
 /* ================================================================
    辅助标签：收录库 / 中科院分区
-   iOS 风格 tinted 底色 —— 极浅背景 + 同色系深文字，无描边
+   ------------------------------------------------------------
+   尺寸：与主标签完全一致（21px 高 / 12px 字 / 6px 圆角），
+        这样一排标签高度齐平，视觉更整齐。
+   配色：iOS tinted 风格但加深底色 —— 原 0.12~0.20 的透明度
+        在白底页面上太淡、看不清，故整体提到 0.28 左右，
+        文字色同步加深以保证对比度。
    ================================================================ */
 .sxfx-tag.sxfx-aux {
-  height: 18px;
-  padding: 0 7px;
-  font-size: 11px;
-  line-height: 18px;
-  font-weight: 400;                    /* SF Pro Regular */
-  border-radius: 5px;
-  letter-spacing: 0;
+  height: 21px;                         /* 与主标签一致 */
+  padding: 0 8px;
+  font-size: 12px;                      /* 与主标签一致 */
+  line-height: 21px;
+  font-weight: 500;                     /* 与主标签一致 */
+  border-radius: 6px;                   /* 与主标签一致 */
+  letter-spacing: 0.2px;                /* 与主标签一致 */
   /* 防御性样式：部分平台的表格列有固定宽度或 overflow:hidden，
      多个辅助标签并排时容易被裁掉第二个。 nowrap + 允许换行可避免。 */
   white-space: nowrap;
   flex: 0 0 auto;
   max-width: none;
   /* 默认（未知类型） */
-  background: rgba(120, 120, 128, 0.12);
-  color: #3A3A3C;
-  filter: saturate(0.9);
+  background: rgba(120, 120, 128, 0.26);
+  color: #1C1C1E;
 }
-.sxfx-tag.sxfx-aux:hover { transform: none; filter: saturate(1.05) brightness(0.98); }
+.sxfx-tag.sxfx-aux:hover { transform: none; filter: saturate(1.1) brightness(0.97); }
 .sxfx-tag.sxfx-aux:active { transform: none; }
 .sxfx-tag.sxfx-aux::before { display: none; }  /* 辅助标签不加圆点 */
 
-/* CSSCI —— systemYellow tinted */
-.sxfx-aux.sxfx-cssci-source { background: rgba(255, 204, 0, 0.20); color: #7A5C00; }
-.sxfx-aux.sxfx-cssci-ext    { background: rgba(255, 204, 0, 0.10); color: #8A6D00; }
-/* CSCD —— systemGray tinted（单库时低调些，让双库标签更突出） */
-.sxfx-aux.sxfx-cscd-core   { background: rgba(142, 142, 147, 0.20); color: #3A3A3C; }
-.sxfx-aux.sxfx-cscd-ext    { background: rgba(142, 142, 147, 0.12); color: #48484A; }
+/* CSSCI —— systemYellow tinted（加深） */
+.sxfx-aux.sxfx-cssci-source { background: rgba(255, 204, 0, 0.38); color: #5C4300; }
+.sxfx-aux.sxfx-cssci-ext    { background: rgba(255, 204, 0, 0.24); color: #6B5200; }
+/* CSCD —— systemGray tinted（加深到能与 CSSCI 平衡） */
+.sxfx-aux.sxfx-cscd-core   { background: rgba(142, 142, 147, 0.38); color: #1C1C1E; }
+.sxfx-aux.sxfx-cscd-ext    { background: rgba(142, 142, 147, 0.24); color: #2C2C2E; }
 
 /* ---- 双库收录（CSSCI + CSCD）：实心渐变 + 投影，最醒目 ----
    集中投稿时这是最想一眼看到的标签，故给它最高视觉权重：
@@ -123,10 +129,10 @@
 .sxfx-aux.sxfx-both-core {
   background: linear-gradient(135deg, #af52de 0%, #d42aa4 100%);
   color: #ffffff;
-  font-weight: 600;
+  font-weight: 600;                     /* 强调：双库是重点，但仍与基类同字号 */
   letter-spacing: 0.2px;
   box-shadow: 0 1px 3px rgba(175, 82, 222, 0.4);
-  padding: 0 9px;
+  /* 内边距与其余标签一致（8px），否则同排标签宽度不一致 */
 }
 .sxfx-aux.sxfx-both-mixed {
   background: linear-gradient(135deg, #b968d8 0%, #e05cb0 100%);
@@ -141,17 +147,17 @@
   background: linear-gradient(135deg, #af52de 0%, #d42aa4 100%);
   opacity: 1;
 }
-/* 中科院分区 —— systemRed → systemTeal 递进 */
-.sxfx-aux.sxfx-cas-1 { background: rgba(255, 59, 48, 0.15); color: #C9252D; }
-.sxfx-aux.sxfx-cas-2 { background: rgba(255, 149, 0, 0.16); color: #B25000; }
-.sxfx-aux.sxfx-cas-3 { background: rgba(48, 176, 199, 0.18); color: #00707F; }
-.sxfx-aux.sxfx-cas-4 { background: rgba(142, 142, 147, 0.18); color: #48484A; }
+/* 中科院分区 —— systemRed → systemTeal 递进（同步加深） */
+.sxfx-aux.sxfx-cas-1 { background: rgba(255, 59, 48, 0.32); color: #A3121A; }
+.sxfx-aux.sxfx-cas-2 { background: rgba(255, 149, 0, 0.34); color: #8F4000; }
+.sxfx-aux.sxfx-cas-3 { background: rgba(48, 176, 199, 0.36); color: #005A66; }
+.sxfx-aux.sxfx-cas-4 { background: rgba(142, 142, 147, 0.36); color: #2C2C2E; }
 /* Top / 预警 */
 .sxfx-aux.sxfx-top {
-  background: rgba(255, 204, 0, 0.22); color: #7A5C00; font-weight: 500;
+  background: rgba(255, 204, 0, 0.42); color: #5C4300; font-weight: 500;
 }
 .sxfx-aux.sxfx-warning {
-  background: rgba(255, 59, 48, 0.16); color: #C9252D; font-weight: 500;
+  background: rgba(255, 59, 48, 0.34); color: #A3121A; font-weight: 500;
 }
 
 /* ================================================================
