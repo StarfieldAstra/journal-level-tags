@@ -292,10 +292,12 @@
 
   /**
    * 重绘全部已注入的标签。
-   * 覆盖级别后需要重算标签，WeakSet 不可遍历，故按 [data-sxfx] 反查并整体重建。
+   * 覆盖级别后需要重算标签，WeakSet 不可遍历，故按标记反查并整体重建。
+   * 标签本身用 [data-sxfx]，行容器用 [data-sxfx-line]，两者都要清。
    */
   function rerenderAll() {
     closePop();
+    document.querySelectorAll('[data-sxfx-line]').forEach((el) => el.remove());
     document.querySelectorAll('[data-sxfx]').forEach((el) => el.remove());
     resetInjected();
     scan();
@@ -315,8 +317,12 @@
   document.addEventListener(
     'click',
     (e) => {
-      if (curPop && !curPop.contains(e.target) && !(e.target.closest && e.target.closest('[data-sxfx]'))) {
-        closePop();
+      // 点在标签行容器的空白处也应关闭浮层，故两个标记都算
+      if (curPop && !curPop.contains(e.target)) {
+        const inTag = e.target.closest && (
+          e.target.closest('[data-sxfx]') || e.target.closest('[data-sxfx-line]')
+        );
+        if (!inTag) closePop();
       }
     },
     true
@@ -376,7 +382,12 @@
       (rec.c || rec.d || rec.z || rec.s || rec.w);
     if (!isInteresting) return;
 
-    const frag = document.createDocumentFragment();
+    // 整组标签放进一个 block 级容器 —— 必然另起一行，不受刊名长短影响。
+    // 若直接作为刊名的兄弟节点插入，会跟着刊名文字流走：
+    // 刊名短则与刊名同行，刊名长则被挤到第二行，位置参差不齐。
+    const line = document.createElement('span');
+    line.className = NS + '-tagline';
+    line.setAttribute('data-sxfx-line', '1');   // 容器单独标记，避免与标签混算
 
     // 主标签：级别
     const main = makeTag(
@@ -389,7 +400,7 @@
       e.stopPropagation();
       openPop(main, res);
     });
-    frag.appendChild(main);
+    line.appendChild(main);
 
     // 辅助标签
     if (showAux) {
@@ -401,11 +412,12 @@
           e.stopPropagation();
           openPop(t, res);
         });
-        frag.appendChild(t);
+        line.appendChild(t);
       }
     }
 
-    nameEl.parentElement.insertBefore(frag, nameEl.nextSibling);
+    // 插到刊名之后、同一父元素内（保持 DOM 上下文，避免跨结构错位）
+    nameEl.parentElement.insertBefore(line, nameEl.nextSibling);
     injected.add(nameEl);
   }
 
