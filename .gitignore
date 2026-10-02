@@ -27,3 +27,6 @@ package_for_store.js
 # 一次性辅助工具
 host_helper.py
 make_icons.js
+
+# 打包产物不入库（安装包请用 GitHub Release 附件，不要提交进仓库）
+release/*.zip
